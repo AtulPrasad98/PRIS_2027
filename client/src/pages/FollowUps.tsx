@@ -1,0 +1,12 @@
+import PrisShell, { EmptyState, SectionHeading } from "@/components/PrisShell";
+import { formatDate } from "@/lib/app";
+import { trpc } from "@/lib/trpc";
+import { Check, Clock3, X } from "lucide-react";
+import { toast } from "sonner";
+
+export default function FollowUps() {
+  const utils = trpc.useUtils(); const contacts = trpc.contacts.list.useQuery().data ?? []; const query = trpc.followUps.list.useQuery({ includeCompleted: true });
+  const update = trpc.followUps.update.useMutation({ onSuccess: () => { utils.followUps.list.invalidate(); utils.dashboard.summary.invalidate(); toast.success("Follow-up updated"); }, onError: error => toast.error(error.message) });
+  const rows = query.data ?? [];
+  return <PrisShell eyebrow="Time horizon" title="Follow-ups" description="A follow-up belongs here because there is a reason to reconnect — not because the calendar is empty."><div className="panel panel-pad"><SectionHeading eyebrow="Queue" title="Your reminders" note="A considerate follow-up usually carries new context, a promised resource, or an agreed next step." />{rows.length ? <div className="followup-list">{rows.map(item => { const contact = contacts.find(c => c.id === item.contactId); const date = new Date(item.dueAt); return <div className="followup-row" key={item.id}><div className="followup-date"><strong>{date.getDate()}</strong><span>{date.toLocaleString("en", { month: "short" })}</span></div><div className="followup-copy"><strong>{contact?.displayName ?? "Contact"} <span className={`status-chip ${item.status === "Completed" ? "muted" : item.status === "Dismissed" ? "red" : ""}`} style={{ marginLeft: 6 }}>{item.status}</span></strong><p>{item.reason}</p><div style={{ marginTop: 6, color: "#84918c", fontSize: 10 }}>{formatDate(item.dueAt)}</div></div>{item.status === "Planned" && <div className="followup-actions"><button className="button small" onClick={() => update.mutate({ id: item.id, status: "Completed" })}><Check size={13} /> Done</button><button className="icon-button" onClick={() => update.mutate({ id: item.id, status: "Dismissed" })} aria-label="Dismiss"><X size={15} /></button></div>}</div>; })}</div> : <EmptyState title="No follow-ups yet" body="The best follow-up is specific, proportionate, and easy for the other person to decline." action={<div style={{ display: "flex", gap: 8 }}><Clock3 size={17} color="#47645a" /><span style={{ color: "#50615d", fontSize: 12 }}>Add one from a contact workspace</span></div>} />}</div></PrisShell>;
+}
