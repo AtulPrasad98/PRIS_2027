@@ -1,14 +1,47 @@
-# Professional Relationship Intelligence
+# PRIS — Professional Relationship Intelligence
 
-React / Express / tRPC / Drizzle starter, adapted from the Sandbox web-db-user template.
+PRIS is a private, evidence-backed workspace for understanding professional relationships, preserving context, and choosing thoughtful next actions. It is designed for human review: AI can draft and explain, but it does not decide or send messages.
 
-- `pnpm dev`: development server; honors `PORT` (default 3000).
-- `pnpm build` / `pnpm start`: build and serve `dist/index.js` and `dist/public/`.
-- `pnpm db:migrate`: apply checked-in migrations. `pnpm db:push`: generate and apply new schema changes.
-- `pnpm check` / `pnpm test`: types and application tests.
+## What is included
 
-Start with the Webdev skill's default-template guide. Platform login, storage, payments and service contracts live in its shared references; read the relevant capability before extending its helper.
+- Owner-scoped contacts, evidence, interactions, relationship states, projects, follow-ups, and private notes.
+- Server-side structured AI for person intelligence, introductions, conversation analysis, and project matching.
+- Persistent light/dark mode and India Standard Time (`Asia/Kolkata`) calendar handling.
+- React + Vite frontend, Express server, tRPC API, Drizzle ORM, and managed database migrations.
+- GitHub Actions CI for typechecking, tests, and the production build.
+- A static project portfolio at [`docs/index.html`](docs/index.html), deployed to GitHub Pages.
 
-`server/_core/publicConfig.ts` exposes only named public runtime values. Private keys stay server-side. The platform serves managed `/manus-storage/` assets; the application does not register a second proxy.
+## Local development
 
-Platform configuration is readable and editable through `webdev.config`. Default settings are initial values, not enforced constraints. The agent may modify the files, commands and configuration or follow the flexible guide for another stack.
+Requirements: Node.js 22 and pnpm 10.18.0.
+
+```bash
+cp .env.example .env.local
+pnpm install --frozen-lockfile
+pnpm dev
+```
+
+The development server runs on port 3000 by default. Never commit `.env.local` or real credentials.
+
+## Quality checks
+
+```bash
+pnpm check       # TypeScript diagnostics
+pnpm test        # Vitest suite
+pnpm build       # Frontend and server production build
+```
+
+The same checks run in [GitHub Actions](.github/workflows/ci.yml) for pushes and pull requests targeting `main`.
+
+## Deployment boundaries
+
+The authenticated PRIS workspace runs on the Manus-managed runtime because it needs secure cookies, authentication, server routes, database access, and built-in AI. Runtime values are supplied through managed secrets and environment configuration.
+
+GitHub Pages hosts only the static portfolio overview in `docs/`; it cannot host the authenticated PRIS backend or database. The Pages workflow is defined in [.github/workflows/pages.yml](.github/workflows/pages.yml).
+
+## Documentation
+
+- [Contributing](CONTRIBUTING.md)
+- [Security policy](SECURITY.md)
+- [Architecture](docs/architecture.md)
+- [MIT License](LICENSE)
