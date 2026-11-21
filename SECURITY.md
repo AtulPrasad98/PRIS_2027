@@ -2,7 +2,7 @@
 
 ## Scope
 
-PRIS stores professional relationship context behind authenticated server and database boundaries. The public GitHub repository contains source code and safe configuration templates only.
+PRIS currently runs in fully open shared-workspace mode. Anyone with the application URL can view, create, edit, and delete the same professional relationship context and notes. Do not enter confidential personal, recruiting, or sensitive relationship data. The public GitHub repository contains source code and safe configuration templates only.
 
 ## Secret handling
 

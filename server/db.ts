@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users } from "../drizzle/schema";
+import { InsertUser, User, users } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -88,4 +88,44 @@ export async function getUserByOpenId(openId: string) {
   return result.length > 0 ? result[0] : undefined;
 }
 
-// TODO: add feature queries here as your schema grows.
+/**
+ * Public mode uses one shared identity so existing owner-scoped records remain
+ * addressable without requiring every visitor to authenticate. Prefer the
+ * configured owner, then the first existing user, and only create a new user
+ * when the database is otherwise empty.
+ */
+export async function getSharedWorkspaceUser(): Promise<User> {
+  const db = await getDb();
+  if (!db) {
+    return {
+      id: 1,
+      openId: "public-workspace",
+      name: "PRIS Shared Workspace",
+      email: null,
+      loginMethod: "public",
+      role: "admin",
+      createdAt: new Date(0),
+      updatedAt: new Date(),
+      lastSignedIn: new Date(),
+    };
+  }
+
+  if (ENV.ownerOpenId) {
+    const configuredOwner = await getUserByOpenId(ENV.ownerOpenId);
+    if (configuredOwner) return configuredOwner;
+  }
+
+  const existing = await db.select().from(users).limit(1);
+  if (existing[0]) return existing[0];
+
+  await upsertUser({
+    openId: "public-workspace",
+    name: "PRIS Shared Workspace",
+    loginMethod: "public",
+    role: "admin",
+  });
+
+  const created = await getUserByOpenId("public-workspace");
+  if (!created) throw new Error("Unable to create the shared workspace identity");
+  return created;
+}

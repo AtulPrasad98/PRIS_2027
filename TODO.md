@@ -43,3 +43,8 @@
 - API keys are not present in frontend code.
 - Built-in Manus AI is used server-side; external paid APIs are not required for the core MVP.
 - Unsupported or incomplete integrations are labeled clearly; no LinkedIn automation or private-message collection is implemented.
+
+## Public shared-workspace access
+- The PRIS interface opens without Google sign-in or any login gate.
+- All visitors share the existing workspace identity and can view, create, edit, and delete workspace records.
+- The interface clearly labels the workspace as shared so visitors understand that changes are visible to everyone.

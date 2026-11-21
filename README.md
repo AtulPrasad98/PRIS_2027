@@ -1,10 +1,10 @@
 # PRIS — Professional Relationship Intelligence
 
-PRIS is a private, evidence-backed workspace for understanding professional relationships, preserving context, and choosing thoughtful next actions. It is designed for human review: AI can draft and explain, but it does not decide or send messages.
+PRIS is an open, shared evidence-backed workspace for understanding professional relationships, preserving context, and choosing thoughtful next actions. It is designed for human review: AI can draft and explain, but it does not decide or send messages.
 
 ## What is included
 
-- Owner-scoped contacts, evidence, interactions, relationship states, projects, follow-ups, and private notes.
+- Shared contacts, evidence, interactions, relationship states, projects, follow-ups, and notes. Every visitor can view and modify the same workspace.
 - Server-side structured AI for person intelligence, introductions, conversation analysis, and project matching.
 - Persistent light/dark mode and India Standard Time (`Asia/Kolkata`) calendar handling.
 - React + Vite frontend, Express server, tRPC API, Drizzle ORM, and managed database migrations.
@@ -35,9 +35,9 @@ The same checks run in [GitHub Actions](.github/workflows/ci.yml) for pushes and
 
 ## Deployment boundaries
 
-The authenticated PRIS workspace runs on the Manus-managed runtime because it needs secure cookies, authentication, server routes, database access, and built-in AI. Runtime values are supplied through managed secrets and environment configuration.
+The open PRIS workspace runs on the Manus-managed runtime because it needs server routes, database access, and built-in AI. Authentication is intentionally bypassed: visitors use one shared workspace identity, so all records and changes are public to anyone with the application URL. Runtime values are supplied through managed secrets and environment configuration.
 
-GitHub Pages hosts only the static portfolio overview in `docs/`; it cannot host the authenticated PRIS backend or database. The Pages workflow is defined in [.github/workflows/pages.yml](.github/workflows/pages.yml).
+GitHub Pages hosts only the static portfolio overview in `docs/`; it cannot host the shared PRIS backend or database. The Pages workflow is defined in [.github/workflows/pages.yml](.github/workflows/pages.yml).
 
 ## Documentation
 

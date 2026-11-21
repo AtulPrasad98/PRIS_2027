@@ -1,6 +1,6 @@
 import type { CreateExpressContextOptions } from "@trpc/server/adapters/express";
 import type { User } from "../../drizzle/schema";
-import { sdk } from "./sdk";
+import { getSharedWorkspaceUser } from "../db";
 
 export type TrpcContext = {
   req: CreateExpressContextOptions["req"];
@@ -14,10 +14,22 @@ export async function createContext(
   let user: User | null = null;
 
   try {
-    user = await sdk.authenticateRequest(opts.req);
+    user = await getSharedWorkspaceUser();
   } catch (error) {
-    // Authentication is optional for public procedures.
-    user = null;
+    // Public mode remains usable for previews and health checks even when the
+    // database is unavailable. Data operations still report DB errors.
+    console.warn("[Public workspace] Falling back to an in-memory identity:", error);
+    user = {
+      id: 1,
+      openId: "public-workspace",
+      name: "PRIS Shared Workspace",
+      email: null,
+      loginMethod: "public",
+      role: "admin",
+      createdAt: new Date(0),
+      updatedAt: new Date(),
+      lastSignedIn: new Date(),
+    };
   }
 
   return {
