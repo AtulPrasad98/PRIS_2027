@@ -111,3 +111,15 @@ temp/
 
 # Manus version file (auto-generated, not part of source)
 client/public/__manus__/version.json
+
+# Public repository safety
+.manus-logs/
+.envrc
+.npmrc
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+*credentials*
+*secrets*
